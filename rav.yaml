@@ -2,8 +2,14 @@
 # with the project's virtual environment activated.
 
 scripts:
+  install:
+    - python -m pip install -r requirements.txt
+    - npm i
+
+  install-python: python -m pip install -r requirements.txt
+  install-node: npm i
+
   upgrade: python -m pip install --upgrade pip
-  install: python -m pip install -r requirements.txt
   packages-check: python -m pip check
   version: python -m django --version
   check: python bootcamp/manage.py check
