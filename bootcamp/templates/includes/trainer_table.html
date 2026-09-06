@@ -1,0 +1,60 @@
+<div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <table class="w-full min-w-[640px] text-left text-sm">
+        <caption class="sr-only">
+            Trainers and teaching subjects
+        </caption>
+
+        <thead class="border-b border-slate-200 bg-slate-50 text-slate-600">
+            <tr>
+                <th scope="col" class="px-6 py-4">ID</th>
+                <th scope="col" class="px-6 py-4">Trainer</th>
+                <th scope="col" class="px-6 py-4">Subject</th>
+                <th scope="col" class="px-6 py-4 text-right">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody class="divide-y divide-slate-100">
+            {% for trainer in rows %}
+                <tr class="hover:bg-slate-50">
+                    <td class="px-6 py-5 text-slate-500">
+                        #{{ trainer.pk }}
+                    </td>
+
+                    <th scope="row" class="px-6 py-5 font-semibold">
+                        {{ trainer.first_name }} {{ trainer.last_name }}
+                    </th>
+
+                    <td class="px-6 py-5">
+                        <span class="inline-block rounded-full bg-indigo-50
+                                     px-3 py-1 text-indigo-700">
+                            {{ trainer.subject }}
+                        </span>
+                    </td>
+
+                    <td class="px-6 py-5">
+                        <div class="flex justify-end gap-4">
+                            <a href="{% url 'update_trainer' trainer.pk %}"
+                               aria-label="Edit {{ trainer }}"
+                               class="font-semibold text-indigo-700 hover:underline">
+                                Edit
+                            </a>
+
+                            <a href="{% url 'delete_trainer' trainer.pk %}"
+                               aria-label="Delete {{ trainer }}"
+                               class="font-semibold text-red-700 hover:underline">
+                                Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4"
+                        class="px-6 py-12 text-center text-slate-500">
+                        No trainers found.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

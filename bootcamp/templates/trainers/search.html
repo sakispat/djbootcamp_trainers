@@ -1,44 +1,31 @@
 {% extends 'base.html' %}
 
-{% block title %}Search{% endblock %}
+{% block title %}Search trainers{% endblock %}
 
 {% block content %}
-    <h3 class="display-4 text-center">Search</h3>
+    <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight">
+                Search trainers
+            </h1>
+
+            {% if query %}
+                <p class="mt-2 text-slate-500">
+                    Results for "{{ query }}"
+                </p>
+            {% else %}
+                <p class="mt-2 text-slate-500">
+                    Enter a surname in the navigation search field.
+                </p>
+            {% endif %}
+        </div>
+
+        <a href="{% url 'home' %}" class="btn-secondary">
+            All trainers
+        </a>
+    </div>
 
     {% if query %}
-        <h5 class="display-4 text-center mt-2 mb-5">Your search for {{ query }}</h5>
-        {% if results %}
-            <table class="table table-striped">
-                <thead class="table-info">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First Name</th>
-                        <th scope="col">Last Name</th>
-                        <th scope="col">Subject</th>
-                        <th scope="col">Buttons</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for trainer in results %}
-                        <tr>
-                            <th scope="row">{{ trainer.id }}</th>
-                            <td>{{ trainer.first_name }}</td>
-                            <td>{{ trainer.last_name }}</td>
-                            <td>{{ trainer.subject }}</td>
-                            <td colspan="2">
-                                <a href="{% url 'update_trainer' trainer.id %}" class="btn btn-info">
-                                    <i class="bi bi-pen"></i>
-                                </a>
-                                <a href="{% url 'delete_trainer' trainer.id %}" class="btn btn-danger">
-                                    <i class="bi bi-trash2"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p class="text-muted">No search trainer</p>
-        {% endif %}
+        {% include "includes/trainer_table.html" with rows=results %}
     {% endif %}
 {% endblock %}

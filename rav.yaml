@@ -1,0 +1,21 @@
+# Run these commands from the repository root
+# with the project's virtual environment activated.
+
+scripts:
+  upgrade: python -m pip install --upgrade pip
+  install: python -m pip install -r requirements.txt
+  packages-check: python -m pip check
+  version: python -m django --version
+  check: python bootcamp/manage.py check
+  secret: python -c "import secrets;print(secrets.token_urlsafe(<your_number>))"
+  migrations-check: python bootcamp/manage.py makemigrations --check --dry-run
+  makemigrations: python bootcamp/manage.py makemigrations
+  migrate: python bootcamp/manage.py migrate
+  migrations: python bootcamp/manage.py showmigrations
+  superuser: python bootcamp/manage.py createsuperuser
+  server: python bootcamp/manage.py runserver 127.0.0.1:8000
+  shell: python bootcamp/manage.py shell
+  test: python bootcamp/manage.py test trainers
+  collectstatic: python bootcamp/manage.py collectstatic
+  css-watch: npm run css:watch
+  css-build: npm run css:build

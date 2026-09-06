@@ -1,25 +1,54 @@
-<ul class="pagination justify-content-center mt-5 mb-5">
-    {% if trainer_lists.has_previous %}
-        <li class="page-item"><a class="page-link" href="?page={{ trainer_lists.pervious_page_number }}">Previous</a></li>
-    {% else %}
-        <li class="page-item disabled">
-            <a class="page-link" href="?page={{ trainer_lists.num_pages }}" tabindex="-1" aria-disabled="true">Previous</a>
-        </li>
-    {% endif %}
-    
-    {% for i in trainer_lists.paginator.page_range %}
-        {% if trainer_lists.number == i %}
-            <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-        {% else %}
-            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-        {% endif %}
-    {% endfor %}
+{% if page_obj.has_other_pages %}
+    <nav aria-label="Pagination"
+         class="mt-6 flex flex-wrap items-center justify-between gap-4">
 
-    {% if trainer_lists.has_next %}
-        <li class="page-item"><a class="page-link" href="?page={{ trainer_lists.next_page_number }}">Next</a></li>
-    {% else %}
-        <li class="page-item disabled">
-            <a class="page-link" href="?page={{ trainer_lists.num_pages }}">Next</a>
-        </li>
-    {% endif %}
-</ul>
+        <p class="text-sm text-slate-500">
+            Page {{ page_obj.number }}
+            of {{ page_obj.paginator.num_pages }}
+        </p>
+
+        <div class="flex flex-wrap items-center gap-2">
+            {% if page_obj.has_previous %}
+                <a href="{% querystring page=page_obj.previous_page_number %}"
+                   class="btn-secondary">
+                    Previous
+                </a>
+            {% else %}
+                <span aria-disabled="true"
+                      class="rounded-lg border border-slate-200
+                             px-4 py-2.5 text-sm text-slate-400">
+                    Previous
+                </span>
+            {% endif %}
+
+            {% for number in page_obj.paginator.page_range %}
+                {% if number == page_obj.number %}
+                    <span aria-current="page"
+                          class="rounded-lg bg-indigo-600 px-4 py-2.5
+                                 text-sm font-semibold text-white">
+                        {{ number }}
+                    </span>
+                {% elif number >= page_obj.number|add:"-2" and number <= page_obj.number|add:"2" %}
+                    <a href="{% querystring page=number %}"
+                       aria-label="Page {{ number }}"
+                       class="btn-secondary">
+                        {{ number }}
+                    </a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="{% querystring page=page_obj.next_page_number %}"
+                   class="btn-secondary">
+                    Next
+                </a>
+            {% else %}
+                <span aria-disabled="true"
+                      class="rounded-lg border border-slate-200
+                             px-4 py-2.5 text-sm text-slate-400">
+                    Next
+                </span>
+            {% endif %}
+        </div>
+    </nav>
+{% endif %}
