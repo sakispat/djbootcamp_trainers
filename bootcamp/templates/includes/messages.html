@@ -1,13 +1,24 @@
 {% if messages %}
-    {% for message in messages %}
-        {% if message.tags == 'error' %}
-            <div class="alert alert-danger" role="alert">
-                <i class="far fa-exclamation-circle"></i> {{ message }}
+    <div class="mb-6 space-y-3">
+        {% for message in messages %}
+            <div
+                {% if message.level >= 30 %}
+                    role="alert"
+                {% else %}
+                    role="status"
+                {% endif %}
+                class="rounded-xl border p-4 text-sm
+                       {% if message.level >= 40 %}
+                           border-red-200 bg-red-50 text-red-800
+                       {% elif message.level >= 30 %}
+                           border-amber-200 bg-amber-50 text-amber-800
+                       {% elif message.level == 25 %}
+                           border-emerald-200 bg-emerald-50 text-emerald-800
+                       {% else %}
+                           border-blue-200 bg-blue-50 text-blue-800
+                       {% endif %}">
+                {{ message }}
             </div>
-        {% else %}
-            <div class="alert alert-success" role="alert">
-                <i class="far fa-check-circle"></i> {{ message }}
-            </div>
-        {% endif %}
-    {% endfor %}
+        {% endfor %}
+    </div>
 {% endif %}

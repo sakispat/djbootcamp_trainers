@@ -1,24 +1,37 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+    <html lang="en">
     <head>
-        <title>Trainers - {% block title %}{% endblock %}</title>
-        <meta charset="UTF-8">
+        <title>{% block title %}Trainers{% endblock %} | Bootcamp</title>
+        <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge, Chorme=1">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="{% static 'css/main.css' %}">
+        {% block extra_css %}{% endblock %}
     </head>
-    <body>
-        {% include "includes/navbar.html" %}
+    <body class="min-h-screen bg-slate-100 text-slate-900 antialiased">
+        <a href="#main-content" class="sr-only focus:not-sr-only focus:block focus:bg-white focus:p-4">
+            Skip to content
+        </a>
 
-        <div class="container mt-5">
-            {% include 'includes/messages.html' %}
-            {% block content %}{% endblock %}
+        <div class="min-h-screen lg:grid lg:grid-cols-[240px_1fr]">
+            {% include "includes/navbar.html" %}
+
+            <div class="min-w-0">
+                <header class="border-b border-slate-200 bg-white px-6 py-5">
+                    <p class="text-sm font-medium text-slate-500">
+                        Bootcamp / Trainer management
+                    </p>
+                </header>
+
+                <main id="main-content"
+                    class="mx-auto max-w-6xl p-4 sm:p-8">
+                    {% include "includes/messages.html" %}
+
+                    {% block content %}{% endblock %}
+                </main>
+            </div>
         </div>
-        
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="{% static 'js/main.js' %}"></script>
+
+        {% block extra_js %}{% endblock %}
     </body>
 </html>

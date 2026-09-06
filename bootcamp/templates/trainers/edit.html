@@ -1,31 +1,24 @@
 {% extends 'base.html' %}
 
-{% block title %}Edit Trainer{% endblock %}
+{% block title %}Edit trainer{% endblock %}
 
 {% block content %}
-    <h3 class="display-4 text-center mb-4">Edit Trainers</h3>
+    <div class="mx-auto max-w-2xl">
+        <a href="{% url 'home' %}"
+           class="text-sm font-semibold text-indigo-700 hover:underline">
+            Back to trainers
+        </a>
 
-    <form action="{% url 'update_trainer' trainer.id %}" class="needs-validation" method="POST" novalidate>
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="first_name">First Name</label>
-            <input type="text" name="first_name" id="first_name" class="form-control" value="{{ trainer.first_name }}" required>
-            <div class="valid-feedback"></div>
-            <div class="invalid-feedback">Please fill out first name</div>
-        </div>
-        <div class="form-group">
-            <label for="last_name">Last Name</label>
-            <input type="text" name="last_name" id="last_name" class="form-control" value="{{ trainer.last_name }}" required>
-            <div class="valid-feedback"></div>
-            <div class="invalid-feedback">Please fill out last name</div>
-        </div>
-        <div class="form-group">
-            <label for="subject">Subject</label>
-            <input type="text" name="subject" id="subject" class="form-control" value="{{ trainer.subject }}" required>
-            <div class="valid-feedback"></div>
-            <div class="invalid-feedback">Please fill out subject</div>
-        </div>
-        <input type="submit" value="Update" class="btn btn-success">
-        <input type="reset" value="Cancel" class="btn btn-danger float-right">
-    </form>
+        <h1 class="mt-6 text-3xl font-bold tracking-tight">
+            Edit trainer
+        </h1>
+
+        <p class="mt-2 text-slate-500">
+            Update the details for {{ trainer }}.
+        </p>
+
+        <section class="panel mt-6">
+            {% include "trainers/_form.html" with submit_label="Save changes" %}
+        </section>
+    </div>
 {% endblock %}

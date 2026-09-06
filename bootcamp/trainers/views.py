@@ -1,70 +1,155 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+"""Views for trainer management."""
+
 from django.contrib import messages
-from .models import Trainer
+from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_http_methods
 from .forms import TrainerForm
+from .models import Trainer
 
 
-# Home Page and List Table All Trainers
-# Paginators 
+@require_http_methods(["GET"])
 def index(request):
-    all_trainers = Trainer.objects.all()
-    page = request.GET.get('page', 1)
-    paginator = Paginator(all_trainers, 6)
-    try:
-        trainer_lists = paginator.page(page)
-    except PageNotAnInteger:
-        trainer_lists = paginator.page(1)
-    except EmptyPage:
-        trainer_lists = paginator.page(paginator.num_pages)
-    context = { 'trainer_lists': trainer_lists }
-    return render(request, 'trainers/index.html', context)
+    """Display trainers with stable ordering and pagination."""
+    trainers = Trainer.objects.order_by(
+        "last_name",
+        "first_name",
+        "pk",
+    )
+
+    paginator = Paginator(trainers, 6)
+    trainer_lists = paginator.get_page(request.GET.get("page"))
+
+    context = {
+        "trainer_lists": trainer_lists,
+    }
+
+    return render(
+        request,
+        "trainers/index.html",
+        context,
+    )
 
 
-# Create Trainers Form
+@require_http_methods(["GET", "POST"])
 def create_trainer(request):
-    if request.method == 'POST':
+    """Create a trainer and preserve invalid form input."""
+    if request.method == "POST":
         form = TrainerForm(request.POST)
+
         if form.is_valid():
             form.save()
-            messages.success(request, 'Create trainer was successfully')
-            return redirect('home')
-    form = TrainerForm()
-    context = { 'form': form }
-    return render(request, 'trainers/create.html', context)
+
+            messages.success(
+                request,
+                "Trainer created successfully.",
+            )
+
+            return redirect("home")
+
+    else:
+        form = TrainerForm()
+
+    return render(
+        request,
+        "trainers/create.html",
+        {"form": form},
+    )
 
 
-# Edit/Update ID Trainer Form
+@require_http_methods(["GET", "POST"])
 def update_trainer(request, trainer_id):
-    trainer = get_object_or_404(Trainer, id=trainer_id)
-    if request.method == 'POST':
-        form = TrainerForm(request.POST)
+    """Update the selected trainer without creating a new record."""
+    trainer = get_object_or_404(
+        Trainer,
+        pk=trainer_id,
+    )
+
+    if request.method == "POST":
+        form = TrainerForm(
+            request.POST,
+            instance=trainer,
+        )
+
         if form.is_valid():
             form.save()
-            messages.success(request, 'Update trainer was successfully')
-            return redirect('home')
-    form = TrainerForm()
-    context = { 'form': form, 'trainer': trainer }
-    return render(request, 'trainers/edit.html', context)
+
+            messages.success(
+                request,
+                "Trainer updated successfully.",
+            )
+
+            return redirect("home")
+
+    else:
+        form = TrainerForm(instance=trainer)
+
+    context = {
+        "form": form,
+        "trainer": trainer,
+    }
+
+    return render(
+        request,
+        "trainers/edit.html",
+        context,
+    )
 
 
-# Delete ID Trainer
+@require_http_methods(["GET", "POST"])
 def delete_trainer(request, trainer_id):
-    trainer = get_object_or_404(Trainer, id=trainer_id)
-    trainer.delete()
-    messages.success(request, 'Okay! Successfully delete the trainer')
-    return redirect('home')
+    """Show confirmation on GET and delete only on POST."""
+    trainer = get_object_or_404(
+        Trainer,
+        pk=trainer_id,
+    )
+
+    if request.method == "POST":
+        trainer.delete()
+
+        messages.success(
+            request,
+            "Trainer deleted successfully.",
+        )
+
+        return redirect("home")
+
+    return render(
+        request,
+        "trainers/delete_confirm.html",
+        {"trainer": trainer},
+    )
 
 
-# Search Trainers in Table
+@require_http_methods(["GET", "POST"])
 def search_trainer(request):
-    query = request.POST.get('q')
-    results = []
+    """Search by surname while supporting the existing POST form."""
+    # Keep POST support until the search template is migrated to GET.
+    parameters = (
+        request.POST
+        if request.method == "POST"
+        else request.GET
+    )
+
+    query = parameters.get("q", "").strip()
+    results = Trainer.objects.none()
+
     if query:
-        results = Trainer.objects.filter(last_name__icontains=query)
-        if not results:
-            messages.error(request, 'The search for an instructor you are looking for was not successfully try again')
-        else:
-            messages.success(request, 'The search for trainer what you were looking for was successfully')
-    context = {'results': results, 'query': query}
-    return render(request, 'trainers/search.html', context)
+        results = Trainer.objects.filter(
+            last_name__icontains=query,
+        ).order_by(
+            "last_name",
+            "first_name",
+            "pk",
+        )
+
+    context = {
+        "results": results,
+        "query": query,
+    }
+
+    return render(
+        request,
+        "trainers/search.html",
+        context,
+    )
